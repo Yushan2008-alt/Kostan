@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SOCIETY
+  OWNER
+}
+
+enum GenderType {
+  PUTRA
+  PUTRI
+  CAMPUR
+}
+
+enum BookingStatus {
+  PENDING
+  DITERIMA
+  DITOLAK
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String
+  role      Role      @default(SOCIETY)
+  
+  // Relasi
+  koses     Kos[]     // Hanya untuk OWNER
+  reviews   Review[]  // Hanya untuk SOCIETY
+  bookings  Booking[] // Hanya untuk SOCIETY
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Kos {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  gender      GenderType
+  isReady     Boolean      @default(true) // Menandakan kos siap dihuni
+  
+  ownerId     Int
+  owner       User         @relation(fields: [ownerId], references: [id])
+  
+  rooms       Room[]
+  facilities  Facility[]
+  reviews     Review[]
+  
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Room {
+  id          Int       @id @default(autoincrement())
+  name        String    // Misalnya: Kamar A1, Kamar A2
+  price       Float     // Harga tertera meskipun tanpa gateway pembayaran
+  isAvailable Boolean   @default(true)
+  
+  kosId       Int
+  kos         Kos       @relation(fields: [kosId], references: [id])
+  
+  bookings    Booking[]
+}
+
+model Facility {
+  id          Int    @id @default(autoincrement())
+  name        String // Misalnya: AC, WiFi, Kamar Mandi Dalam
+  
+  kosId       Int
+  kos         Kos    @relation(fields: [kosId], references: [id])
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  comment     String
+  reply       String?  // Balasan dari Owner
+  
+  societyId   Int
+  society     User     @relation(fields: [societyId], references: [id])
+  
+  kosId       Int
+  kos         Kos      @relation(fields: [kosId], references: [id])
+  
+  createdAt   DateTime @default(now())
+}
+
+model Booking {
+  id          Int           @id @default(autoincrement())
+  status      BookingStatus @default(PENDING)
+  bookingDate DateTime      @default(now()) // Tanggal pemesanan dibuat
+  
+  societyId   Int
+  society     User          @relation(fields: [societyId], references: [id])
+  
+  roomId      Int
+  room        Room          @relation(fields: [roomId], references: [id])
+}

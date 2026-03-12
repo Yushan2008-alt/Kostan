@@ -1,0 +1,20 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { KosController } from './kos.controller';
+import { KosService } from './kos.service';
+
+describe('KosController', () => {
+  let controller: KosController;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [KosController],
+      providers: [KosService],
+    }).compile();
+
+    controller = module.get<KosController>(KosController);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});
