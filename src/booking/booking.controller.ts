@@ -1,7 +1,7 @@
 // booking.controller.ts
 import { Controller, Get, Post, Patch, Param, Body, Query, Req } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { BookingStatus } from '@prisma/client';
+import { BookingStatus } from '../generated/prisma/enums';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 

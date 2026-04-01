@@ -1,7 +1,7 @@
 // kos.controller.ts
 import { Controller, Get, Query } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { GenderType } from '@prisma/client';
+import { GenderType } from '../generated/prisma/enums';
 
 @Controller('kos')
 export class KosController {
