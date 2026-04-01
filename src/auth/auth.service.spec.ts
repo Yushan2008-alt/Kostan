@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -15,10 +16,17 @@ describe('AuthService', () => {
       delete: jest.fn(),
     },
   };
+  const jwtServiceMock = {
+    signAsync: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, { provide: PrismaService, useValue: prismaMock }],
+      providers: [
+        AuthService,
+        { provide: PrismaService, useValue: prismaMock },
+        { provide: JwtService, useValue: jwtServiceMock },
+      ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
@@ -44,6 +52,7 @@ describe('AuthService', () => {
   });
 
   it('should return user data on successful login', async () => {
+    jwtServiceMock.signAsync.mockResolvedValue('mocked-jwt-token');
     prismaMock.user.findUnique.mockResolvedValue({
       id: 1,
       email: 'user@mail.com',
@@ -58,6 +67,7 @@ describe('AuthService', () => {
     });
 
     expect(result).toEqual({
+      access_token: 'mocked-jwt-token',
       user: {
         id: 1,
         email: 'user@mail.com',

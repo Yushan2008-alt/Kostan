@@ -39,4 +39,10 @@ describe('AuthController', () => {
     await controller.login(payload);
     expect(authServiceMock.login).toHaveBeenCalledWith(payload);
   });
+
+  it('should call registerSociety', async () => {
+    const payload = { email: 'society@mail.com', password: 'secret', name: 'Society' };
+    await controller.registerSociety(payload);
+    expect(authServiceMock.registerSociety).toHaveBeenCalledWith(payload);
+  });
 });
