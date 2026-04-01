@@ -1,15 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { PrismaService } from '../prisma/prisma.service';
 
 describe('AuthController', () => {
   let controller: AuthController;
+  const authServiceMock = {
+    create: jest.fn(),
+    registerSociety: jest.fn(),
+    registerOwner: jest.fn(),
+    login: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
-      providers: [AuthService, { provide: PrismaService, useValue: {} }],
+      providers: [{ provide: AuthService, useValue: authServiceMock }],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
@@ -17,5 +26,17 @@ describe('AuthController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should call registerOwner', async () => {
+    const payload = { email: 'owner@mail.com', password: 'secret', name: 'Owner' };
+    await controller.registerOwner(payload);
+    expect(authServiceMock.registerOwner).toHaveBeenCalledWith(payload);
+  });
+
+  it('should call login', async () => {
+    const payload = { email: 'user@mail.com', password: 'secret' };
+    await controller.login(payload);
+    expect(authServiceMock.login).toHaveBeenCalledWith(payload);
   });
 });
