@@ -1,9 +1,12 @@
 // booking.controller.ts
-import { Controller, Get, Post, Patch, Param, Body, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, Query, Req, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { BookingStatus } from '@prisma/client';
+import { BookingStatus, Role } from '../generated/prisma/enums';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('bookings')
 export class BookingController {
@@ -11,6 +14,8 @@ export class BookingController {
 
   // Pembuatan Booking (diperlukan agar nota bisa dicetak)
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.SOCIETY)
   async createBooking(
     @Body() body: CreateBookingDto,
     @Req() req: any /* TODO: strongly type request.user via auth guard */,
@@ -39,6 +44,8 @@ export class BookingController {
 
   // Owner dapat merubah status diterima atau ditolak
   @Patch(':id/status')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.OWNER)
   async updateStatus(
     @Param('id') id: string,
     @Body() body: UpdateBookingDto,
@@ -51,6 +58,8 @@ export class BookingController {
 
   // Owner dapat melihat histori transaksi berdasarkan tanggal dan bulan
   @Get('history')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.OWNER)
   async getHistory(
     @Query('month') month: string,
     @Query('year') year: string,
