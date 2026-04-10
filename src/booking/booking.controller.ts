@@ -1,5 +1,15 @@
 // booking.controller.ts
-import { Controller, Get, Post, Patch, Param, Body, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Param,
+  Body,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { BookingStatus, Role } from '../generated/prisma/enums';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -46,10 +56,7 @@ export class BookingController {
   @Patch(':id/status')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER)
-  async updateStatus(
-    @Param('id') id: string,
-    @Body() body: UpdateBookingDto,
-  ) {
+  async updateStatus(@Param('id') id: string, @Body() body: UpdateBookingDto) {
     return this.prisma.booking.update({
       where: { id: parseInt(id) },
       data: { status: body.status },
@@ -60,10 +67,7 @@ export class BookingController {
   @Get('history')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER)
-  async getHistory(
-    @Query('month') month: string,
-    @Query('year') year: string,
-  ) {
+  async getHistory(@Query('month') month: string, @Query('year') year: string) {
     const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
     const endDate = new Date(parseInt(year), parseInt(month), 0); // Hari terakhir bulan tsb
 
