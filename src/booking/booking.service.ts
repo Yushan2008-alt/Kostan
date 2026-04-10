@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -9,10 +9,6 @@ export class BookingService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createBookingDto: CreateBookingDto) {
-    if (!createBookingDto.societyId) {
-      throw new BadRequestException('societyId is required to create booking');
-    }
-
     return this.prisma.booking.create({
       data: {
         roomId: createBookingDto.roomId,
