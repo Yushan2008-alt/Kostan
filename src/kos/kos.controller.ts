@@ -11,7 +11,7 @@ export class KosController {
   @Get()
   async getKoses(@Query('gender') gender?: GenderType) {
     const filter: any = { isReady: true }; // Hanya yang siap dihuni
-    
+
     if (gender) {
       filter.gender = gender; // Filter PUTRA / PUTRI / CAMPUR
     }
@@ -20,7 +20,7 @@ export class KosController {
       where: filter,
       include: {
         facilities: true,
-        rooms: { where: { isAvailable: true } }
+        rooms: { where: { isAvailable: true } },
       },
     });
   }
