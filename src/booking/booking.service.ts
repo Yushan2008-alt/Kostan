@@ -1,26 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { BookingStatus } from '../generated/prisma/enums';
 
 @Injectable()
 export class BookingService {
-  create(createBookingDto: CreateBookingDto) {
-    return 'This action adds a new booking';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createBookingDto: CreateBookingDto) {
+    if (!createBookingDto.societyId) {
+      throw new BadRequestException('societyId is required to create booking');
+    }
+
+    return this.prisma.booking.create({
+      data: {
+        roomId: createBookingDto.roomId,
+        societyId: createBookingDto.societyId,
+        status: BookingStatus.PENDING,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all booking`;
+  async findAll() {
+    return this.prisma.booking.findMany({
+      include: {
+        room: true,
+        society: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} booking`;
+  async findOne(id: number) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id },
+      include: {
+        room: true,
+        society: true,
+      },
+    });
+
+    if (!booking) {
+      throw new NotFoundException(`Booking with ID ${id} not found`);
+    }
+
+    return booking;
   }
 
-  update(id: number, updateBookingDto: UpdateBookingDto) {
-    return `This action updates a #${id} booking`;
+  async update(id: number, updateBookingDto: UpdateBookingDto) {
+    await this.findOne(id);
+
+    return this.prisma.booking.update({
+      where: { id },
+      data: updateBookingDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} booking`;
+  async remove(id: number) {
+    await this.findOne(id);
+
+    return this.prisma.booking.delete({
+      where: { id },
+    });
   }
 }
