@@ -8,6 +8,14 @@ export class KosService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createKoDto: CreateKoDto) {
+    const owner = await this.prisma.user.findUnique({
+      where: { id: createKoDto.ownerId },
+    });
+
+    if (!owner) {
+      throw new NotFoundException(`Owner with ID ${createKoDto.ownerId} not found`);
+    }
+
     return this.prisma.kos.create({
       data: createKoDto,
     });

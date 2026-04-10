@@ -8,6 +8,22 @@ export class ReviewService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createReviewDto: CreateReviewDto) {
+    const kos = await this.prisma.kos.findUnique({
+      where: { id: createReviewDto.kosId },
+    });
+    if (!kos) {
+      throw new NotFoundException(`Kos with ID ${createReviewDto.kosId} not found`);
+    }
+
+    const society = await this.prisma.user.findUnique({
+      where: { id: createReviewDto.societyId },
+    });
+    if (!society) {
+      throw new NotFoundException(
+        `Society with ID ${createReviewDto.societyId} not found`,
+      );
+    }
+
     return this.prisma.review.create({
       data: createReviewDto,
     });

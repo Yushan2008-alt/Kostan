@@ -9,6 +9,20 @@ export class BookingService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createBookingDto: CreateBookingDto) {
+    const room = await this.prisma.room.findUnique({
+      where: { id: createBookingDto.roomId },
+    });
+    if (!room) {
+      throw new NotFoundException(`Room with ID ${createBookingDto.roomId} not found`);
+    }
+
+    const society = await this.prisma.user.findUnique({
+      where: { id: createBookingDto.societyId },
+    });
+    if (!society) {
+      throw new NotFoundException(`Society with ID ${createBookingDto.societyId} not found`);
+    }
+
     return this.prisma.booking.create({
       data: {
         roomId: createBookingDto.roomId,
