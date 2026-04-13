@@ -7,6 +7,9 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CreateKoDto } from './dto/create-ko.dto';
 import { KosService } from './kos.service';
+import { Request } from 'express';
+
+type AuthenticatedRequest = Request & { user: { id: number } };
 
 @Controller('kos')
 export class KosController {
@@ -20,7 +23,7 @@ export class KosController {
   @Roles(Role.OWNER)
   async createKos(
     @Body() body: Omit<CreateKoDto, 'ownerId'>,
-    @Req() req: any /* TODO: strongly type request.user via auth guard */,
+    @Req() req: AuthenticatedRequest,
   ) {
     return this.kosService.create({
       ...body,
