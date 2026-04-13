@@ -1,5 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateBookingDto } from './dto/create-booking.dto';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { BookingStatus } from '../generated/prisma/enums';
@@ -8,28 +7,39 @@ import { BookingStatus } from '../generated/prisma/enums';
 export class BookingService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createBookingDto: CreateBookingDto) {
+  async create(roomId: number, societyId: number) {
     const room = await this.prisma.room.findUnique({
-      where: { id: createBookingDto.roomId },
+      where: { id: roomId },
     });
     if (!room) {
-      throw new NotFoundException(`Room with ID ${createBookingDto.roomId} not found`);
+      throw new NotFoundException(`Room with ID ${roomId} not found`);
+    }
+    if (!room.isAvailable) {
+      throw new BadRequestException(`Room with ID ${roomId} is not available`);
     }
 
     const society = await this.prisma.user.findUnique({
-      where: { id: createBookingDto.societyId },
+      where: { id: societyId },
     });
     if (!society) {
-      throw new NotFoundException(`Society with ID ${createBookingDto.societyId} not found`);
+      throw new NotFoundException(`Society with ID ${societyId} not found`);
     }
 
-    return this.prisma.booking.create({
-      data: {
-        roomId: createBookingDto.roomId,
-        societyId: createBookingDto.societyId,
-        status: BookingStatus.PENDING,
-      },
-    });
+    const [booking] = await this.prisma.$transaction([
+      this.prisma.booking.create({
+        data: {
+          roomId,
+          societyId,
+          status: BookingStatus.PENDING,
+        },
+      }),
+      this.prisma.room.update({
+        where: { id: roomId },
+        data: { isAvailable: false },
+      }),
+    ]);
+
+    return booking;
   }
 
   async findAll() {

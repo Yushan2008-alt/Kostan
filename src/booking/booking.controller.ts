@@ -10,17 +10,22 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { BookingStatus, Role } from '../generated/prisma/enums';
+import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import type { AuthenticatedRequest } from '../auth/types/authenticated-request.type';
+import { PrismaService } from '../prisma/prisma.service';
+import { Role } from '../generated/prisma/enums';
 
 @Controller('bookings')
 export class BookingController {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly bookingService: BookingService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   // Pembuatan Booking (diperlukan agar nota bisa dicetak)
   @Post()
@@ -28,15 +33,9 @@ export class BookingController {
   @Roles(Role.SOCIETY)
   async createBooking(
     @Body() body: CreateBookingDto,
-    @Req() req: any /* TODO: strongly type request.user via auth guard */,
+    @Req() req: AuthenticatedRequest,
   ) {
-    return this.prisma.booking.create({
-      data: {
-        roomId: body.roomId,
-        societyId: req.user.id,
-        status: BookingStatus.PENDING,
-      },
-    });
+    return this.bookingService.create(body.roomId, req.user.id);
   }
 
   // Society dapat mencetak bukti/nota pemesanan kamar kos
