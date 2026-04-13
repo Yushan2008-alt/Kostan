@@ -1,26 +1,73 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ReviewService {
-  create(createReviewDto: CreateReviewDto) {
-    return 'This action adds a new review';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createReviewDto: CreateReviewDto) {
+    const kos = await this.prisma.kos.findUnique({
+      where: { id: createReviewDto.kosId },
+    });
+    if (!kos) {
+      throw new NotFoundException(`Kos with ID ${createReviewDto.kosId} not found`);
+    }
+
+    const society = await this.prisma.user.findUnique({
+      where: { id: createReviewDto.societyId },
+    });
+    if (!society) {
+      throw new NotFoundException(
+        `Society with ID ${createReviewDto.societyId} not found`,
+      );
+    }
+
+    return this.prisma.review.create({
+      data: createReviewDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all review`;
+  async findAll() {
+    return this.prisma.review.findMany({
+      include: {
+        kos: true,
+        society: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
+  async findOne(id: number) {
+    const review = await this.prisma.review.findUnique({
+      where: { id },
+      include: {
+        kos: true,
+        society: true,
+      },
+    });
+
+    if (!review) {
+      throw new NotFoundException(`Review with ID ${id} not found`);
+    }
+
+    return review;
   }
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
+  async update(id: number, updateReviewDto: UpdateReviewDto) {
+    await this.findOne(id);
+
+    return this.prisma.review.update({
+      where: { id },
+      data: updateReviewDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+  async remove(id: number) {
+    await this.findOne(id);
+
+    return this.prisma.review.delete({
+      where: { id },
+    });
   }
 }

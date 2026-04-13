@@ -25,6 +25,40 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## API Endpoint Matrix
+
+### Public
+
+| Method | Endpoint | Auth | Role | Keterangan |
+| --- | --- | --- | --- | --- |
+| GET | `/` | No | Public | Health/basic hello endpoint |
+| POST | `/auth` | No | Public | Register default user (`SOCIETY`) |
+| POST | `/auth/register/society` | No | Public | Register user role `SOCIETY` |
+| POST | `/auth/register/owner` | No | Public | Register user role `OWNER` |
+| POST | `/auth/login` | No | Public | Login dan dapat access token |
+| GET | `/kos` | No | Public | List kos siap huni, opsional filter `gender` |
+| GET | `/bookings/:id/nota` | No | Public | Detail nota booking |
+
+### Society-only
+
+| Method | Endpoint | Auth | Role | Keterangan |
+| --- | --- | --- | --- | --- |
+| POST | `/bookings` | Yes (JWT) | `SOCIETY` | Buat booking kamar |
+| POST | `/reviews` | Yes (JWT) | `SOCIETY` | Tambah review kos |
+
+### Owner-only
+
+| Method | Endpoint | Auth | Role | Keterangan |
+| --- | --- | --- | --- | --- |
+| GET | `/auth` | Yes (JWT) | `OWNER` | List user |
+| GET | `/auth/:id` | Yes (JWT) | `OWNER` | Detail user |
+| PATCH | `/auth/:id` | Yes (JWT) | `OWNER` | Update user |
+| DELETE | `/auth/:id` | Yes (JWT) | `OWNER` | Delete user |
+| POST | `/kos` | Yes (JWT) | `OWNER` | Tambah data kos milik owner login |
+| PATCH | `/bookings/:id/status` | Yes (JWT) | `OWNER` | Update status booking |
+| GET | `/bookings/history` | Yes (JWT) | `OWNER` | Histori booking by `month` dan `year` |
+| PATCH | `/reviews/:id/reply` | Yes (JWT) | `OWNER` | Balas review society |
+
 ## Project setup
 
 ```bash
