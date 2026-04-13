@@ -9,7 +9,13 @@ import { CreateKoDto } from './dto/create-ko.dto';
 import { KosService } from './kos.service';
 import { Request } from 'express';
 
-type AuthenticatedRequest = Request & { user: { id: number } };
+type AuthenticatedRequest = Request & {
+  user: {
+    id: number;
+    email: string;
+    role: Role;
+  };
+};
 
 @Controller('kos')
 export class KosController {

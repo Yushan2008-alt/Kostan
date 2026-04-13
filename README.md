@@ -36,10 +36,6 @@
 | POST | `/auth/register/society` | No | Public | Register user role `SOCIETY` |
 | POST | `/auth/register/owner` | No | Public | Register user role `OWNER` |
 | POST | `/auth/login` | No | Public | Login dan dapat access token |
-| GET | `/auth` | No | Public | List user (belum diproteksi) |
-| GET | `/auth/:id` | No | Public | Detail user (belum diproteksi) |
-| PATCH | `/auth/:id` | No | Public | Update user (belum diproteksi) |
-| DELETE | `/auth/:id` | No | Public | Delete user (belum diproteksi) |
 | GET | `/kos` | No | Public | List kos siap huni, opsional filter `gender` |
 | GET | `/bookings/:id/nota` | No | Public | Detail nota booking |
 
@@ -54,6 +50,10 @@
 
 | Method | Endpoint | Auth | Role | Keterangan |
 | --- | --- | --- | --- | --- |
+| GET | `/auth` | Yes (JWT) | `OWNER` | List user |
+| GET | `/auth/:id` | Yes (JWT) | `OWNER` | Detail user |
+| PATCH | `/auth/:id` | Yes (JWT) | `OWNER` | Update user |
+| DELETE | `/auth/:id` | Yes (JWT) | `OWNER` | Delete user |
 | POST | `/kos` | Yes (JWT) | `OWNER` | Tambah data kos milik owner login |
 | PATCH | `/bookings/:id/status` | Yes (JWT) | `OWNER` | Update status booking |
 | GET | `/bookings/history` | Yes (JWT) | `OWNER` | Histori booking by `month` dan `year` |
