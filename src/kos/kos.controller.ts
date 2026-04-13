@@ -1,11 +1,33 @@
 // kos.controller.ts
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { GenderType } from '../generated/prisma/enums';
+import { GenderType, Role } from '../generated/prisma/enums';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { CreateKoDto } from './dto/create-ko.dto';
+import { KosService } from './kos.service';
+import type { AuthenticatedRequest } from '../auth/types/authenticated-request.type';
 
 @Controller('kos')
 export class KosController {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly kosService: KosService,
+  ) {}
+
+  @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.OWNER)
+  async createKos(
+    @Body() body: Omit<CreateKoDto, 'ownerId'>,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.kosService.create({
+      ...body,
+      ownerId: req.user.id,
+    });
+  }
 
   // Society dapat melihat daftar kos yang siap dihuni & memfilter gender
   @Get()
