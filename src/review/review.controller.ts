@@ -9,6 +9,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { ReviewService } from './review.service';
+import { CreateReviewDto } from './dto/create-review.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -16,23 +18,20 @@ import { Role } from '../generated/prisma/enums';
 
 @Controller('reviews')
 export class ReviewController {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly reviewService: ReviewService,
+  ) {}
 
   // Society dapat menambahkan komentar
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.SOCIETY)
   @Post()
   async addReview(
-    @Body() body: { kosId: number; comment: string },
-    @Req() req: any,
+    @Body() body: CreateReviewDto,
+    @Req() req: { user: { id: number } },
   ) {
-    return this.prisma.review.create({
-      data: {
-        comment: body.comment,
-        kosId: body.kosId,
-        societyId: req.user.id, // ID didapat dari JWT token
-      },
-    });
+    return this.reviewService.create(body, req.user.id);
   }
 
   // Owner dapat membalas reviews dari society

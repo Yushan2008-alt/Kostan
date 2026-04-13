@@ -1,5 +1,13 @@
 // kos.controller.ts
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { GenderType, Role } from '../generated/prisma/enums';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -32,7 +40,7 @@ export class KosController {
   // Society dapat melihat daftar kos yang siap dihuni & memfilter gender
   @Get()
   async getKoses(@Query('gender') gender?: GenderType) {
-    const filter: any = { isReady: true }; // Hanya yang siap dihuni
+    const filter: { isReady: boolean; gender?: GenderType } = { isReady: true }; // Hanya yang siap dihuni
 
     if (gender) {
       filter.gender = gender; // Filter PUTRA / PUTRI / CAMPUR

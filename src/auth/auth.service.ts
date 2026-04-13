@@ -51,7 +51,10 @@ export class AuthService {
   }
 
   // 1. Society & Petugas dapat register
-  async register(data: any, role: Role) {
+  async register(
+    data: { email: string; password: string; name: string },
+    role: Role,
+  ) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     return this.prisma.user.create({
       data: {
@@ -95,7 +98,7 @@ export class AuthService {
   }
 
   // Petugas (Owner) dapat update data owner
-  async updateProfile(userId: number, data: any) {
+  async updateProfile(userId: number, data: { name?: string; email?: string }) {
     return this.prisma.user.update({
       where: { id: userId },
       data: { name: data.name, email: data.email },

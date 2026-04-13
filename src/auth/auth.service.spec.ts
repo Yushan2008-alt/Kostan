@@ -47,7 +47,9 @@ describe('AuthService', () => {
     });
 
     expect(prismaMock.user.create).toHaveBeenCalled();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const callArg = prismaMock.user.create.mock.calls[0][0];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(callArg.data.role).toBe('OWNER');
   });
 

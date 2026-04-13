@@ -13,7 +13,9 @@ export class KosService {
     });
 
     if (!owner) {
-      throw new NotFoundException(`Owner with ID ${createKoDto.ownerId} not found`);
+      throw new NotFoundException(
+        `Owner with ID ${createKoDto.ownerId} not found`,
+      );
     }
 
     return this.prisma.kos.create({

@@ -17,9 +17,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     await this.$connect();
   }
 
-  async enableShutdownHooks(app: INestApplication) {
-    this.$on('beforeExit' as never, async () => {
-      await app.close();
+  enableShutdownHooks(app: INestApplication) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    (this as any).$on('beforeExit', () => {
+      void app.close();
     });
   }
 }

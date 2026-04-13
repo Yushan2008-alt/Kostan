@@ -7,25 +7,30 @@ import { PrismaService } from '../prisma/prisma.service';
 export class ReviewService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createReviewDto: CreateReviewDto) {
+  async create(createReviewDto: CreateReviewDto, societyId: number) {
     const kos = await this.prisma.kos.findUnique({
       where: { id: createReviewDto.kosId },
     });
     if (!kos) {
-      throw new NotFoundException(`Kos with ID ${createReviewDto.kosId} not found`);
-    }
-
-    const society = await this.prisma.user.findUnique({
-      where: { id: createReviewDto.societyId },
-    });
-    if (!society) {
       throw new NotFoundException(
-        `Society with ID ${createReviewDto.societyId} not found`,
+        `Kos with ID ${createReviewDto.kosId} not found`,
       );
     }
 
+    const society = await this.prisma.user.findUnique({
+      where: { id: societyId },
+    });
+    if (!society) {
+      throw new NotFoundException(`Society with ID ${societyId} not found`);
+    }
+
     return this.prisma.review.create({
-      data: createReviewDto,
+      data: {
+        comment: createReviewDto.comment,
+        kosId: createReviewDto.kosId,
+        societyId,
+        reply: createReviewDto.reply,
+      },
     });
   }
 

@@ -10,8 +10,9 @@ export interface JwtPayload {
   role: Role;
 }
 
+/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends (PassportStrategy as any)(Strategy) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -28,3 +29,4 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     };
   }
 }
+/* eslint-enable @typescript-eslint/no-unsafe-call */
