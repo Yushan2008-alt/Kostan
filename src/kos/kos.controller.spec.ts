@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { KosController } from './kos.controller';
 import { KosService } from './kos.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { GenderType } from '../generated/prisma/enums';
+import { GenderType, Role } from '../generated/prisma/enums';
 
 describe('KosController', () => {
   let controller: KosController;
@@ -33,7 +33,7 @@ describe('KosController', () => {
       description: 'Dekat kampus',
       isReady: true,
     };
-    const req = { user: { id: 7 } };
+    const req = { user: { id: 7, email: 'owner@mail.com', role: Role.OWNER } };
     kosService.create.mockResolvedValue({ id: 1, ownerId: 7, ...payload });
 
     const result = await controller.createKos(payload, req);

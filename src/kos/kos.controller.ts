@@ -7,15 +7,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CreateKoDto } from './dto/create-ko.dto';
 import { KosService } from './kos.service';
-import { Request } from 'express';
-
-type AuthenticatedRequest = Request & {
-  user: {
-    id: number;
-    email: string;
-    role: Role;
-  };
-};
+import type { AuthenticatedRequest } from '../auth/types/authenticated-request.type';
 
 @Controller('kos')
 export class KosController {
