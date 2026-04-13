@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "/home/runner/work/Kostan/Kostan/src/generated/prisma",
+      "value": "C:\\Users\\CANDRA DEWI\\Desktop\\.vscode\\NestJs\\Kostan\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -32,12 +32,12 @@ const config: runtime.GetPrismaClientConfig = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/runner/work/Kostan/Kostan/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\CANDRA DEWI\\Desktop\\.vscode\\NestJs\\Kostan\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../../prisma",
@@ -47,8 +47,6 @@ const config: runtime.GetPrismaClientConfig = {
     "db"
   ],
   "activeProvider": "mysql",
-  "postinstall": false,
-  "ciName": "GitHub Actions",
   "inlineDatasources": {
     "db": {
       "url": {
@@ -57,8 +55,8 @@ const config: runtime.GetPrismaClientConfig = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum Role {\n  SOCIETY\n  OWNER\n}\n\nenum GenderType {\n  PUTRA\n  PUTRI\n  CAMPUR\n}\n\nenum BookingStatus {\n  PENDING\n  DITERIMA\n  DITOLAK\n}\n\nmodel User {\n  id       Int    @id @default(autoincrement())\n  email    String @unique\n  password String\n  name     String\n  role     Role   @default(SOCIETY)\n\n  // Relasi\n  koses    Kos[] // Hanya untuk OWNER\n  reviews  Review[] // Hanya untuk SOCIETY\n  bookings Booking[] // Hanya untuk SOCIETY\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel Kos {\n  id          Int        @id @default(autoincrement())\n  name        String\n  description String?\n  gender      GenderType\n  isReady     Boolean    @default(true) // Menandakan kos siap dihuni\n\n  ownerId Int\n  owner   User @relation(fields: [ownerId], references: [id])\n\n  rooms      Room[]\n  facilities Facility[]\n  reviews    Review[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel Room {\n  id          Int     @id @default(autoincrement())\n  name        String // Misalnya: Kamar A1, Kamar A2\n  price       Float // Harga tertera meskipun tanpa gateway pembayaran\n  isAvailable Boolean @default(true)\n\n  kosId Int\n  kos   Kos @relation(fields: [kosId], references: [id])\n\n  bookings Booking[]\n}\n\nmodel Facility {\n  id   Int    @id @default(autoincrement())\n  name String // Misalnya: AC, WiFi, Kamar Mandi Dalam\n\n  kosId Int\n  kos   Kos @relation(fields: [kosId], references: [id])\n}\n\nmodel Review {\n  id      Int     @id @default(autoincrement())\n  comment String\n  reply   String? // Balasan dari Owner\n\n  societyId Int\n  society   User @relation(fields: [societyId], references: [id])\n\n  kosId Int\n  kos   Kos @relation(fields: [kosId], references: [id])\n\n  createdAt DateTime @default(now())\n}\n\nmodel Booking {\n  id          Int           @id @default(autoincrement())\n  status      BookingStatus @default(PENDING)\n  bookingDate DateTime      @default(now()) // Tanggal pemesanan dibuat\n\n  societyId Int\n  society   User @relation(fields: [societyId], references: [id])\n\n  roomId Int\n  room   Room @relation(fields: [roomId], references: [id])\n}\n",
-  "inlineSchemaHash": "ae37d2a683e04ef1bf212a98842432e41d5bfa8f7482c123602adf6fb6341e41",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ngenerator client_js {\n  provider = \"prisma-client-js\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum Role {\n  SOCIETY\n  OWNER\n}\n\nenum GenderType {\n  PUTRA\n  PUTRI\n  CAMPUR\n}\n\nenum BookingStatus {\n  PENDING\n  DITERIMA\n  DITOLAK\n}\n\nmodel User {\n  id       Int    @id @default(autoincrement())\n  email    String @unique\n  password String\n  name     String\n  role     Role   @default(SOCIETY)\n\n  // Relasi\n  koses    Kos[] // Hanya untuk OWNER\n  reviews  Review[] // Hanya untuk SOCIETY\n  bookings Booking[] // Hanya untuk SOCIETY\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel Kos {\n  id          Int        @id @default(autoincrement())\n  name        String\n  description String?\n  gender      GenderType\n  isReady     Boolean    @default(true) // Menandakan kos siap dihuni\n\n  ownerId Int\n  owner   User @relation(fields: [ownerId], references: [id])\n\n  rooms      Room[]\n  facilities Facility[]\n  reviews    Review[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel Room {\n  id          Int     @id @default(autoincrement())\n  name        String // Misalnya: Kamar A1, Kamar A2\n  price       Float // Harga tertera meskipun tanpa gateway pembayaran\n  isAvailable Boolean @default(true)\n\n  kosId Int\n  kos   Kos @relation(fields: [kosId], references: [id])\n\n  bookings Booking[]\n}\n\nmodel Facility {\n  id   Int    @id @default(autoincrement())\n  name String // Misalnya: AC, WiFi, Kamar Mandi Dalam\n\n  kosId Int\n  kos   Kos @relation(fields: [kosId], references: [id])\n}\n\nmodel Review {\n  id      Int     @id @default(autoincrement())\n  comment String\n  reply   String? // Balasan dari Owner\n\n  societyId Int\n  society   User @relation(fields: [societyId], references: [id])\n\n  kosId Int\n  kos   Kos @relation(fields: [kosId], references: [id])\n\n  createdAt DateTime @default(now())\n}\n\nmodel Booking {\n  id          Int           @id @default(autoincrement())\n  status      BookingStatus @default(PENDING)\n  bookingDate DateTime      @default(now()) // Tanggal pemesanan dibuat\n\n  societyId Int\n  society   User @relation(fields: [societyId], references: [id])\n\n  roomId Int\n  room   Room @relation(fields: [roomId], references: [id])\n}\n",
+  "inlineSchemaHash": "91c182f3b83bad021487d937ffaa69e0e7c03e5f3cd456c9e2f83b7807ec51c9",
   "copyEngine": true,
   "runtimeDataModel": {
     "models": {},
