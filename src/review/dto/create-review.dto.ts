@@ -13,12 +13,12 @@ export class CreateReviewDto {
   @IsNotEmpty({ message: 'Komentar tidak boleh kosong' })
   @MinLength(10, { message: 'Komentar minimal 10 karakter' })
   @MaxLength(500, { message: 'Komentar maksimal 500 karakter' })
-  comment: string;
+  comment!: string;
 
   @IsNumber({}, { message: 'Kos ID harus berupa angka' })
   @IsPositive({ message: 'Kos ID harus positif' })
   @IsNotEmpty({ message: 'Kos ID tidak boleh kosong' })
-  kosId: number;
+  kosId!: number;
 
   @IsOptional()
   @IsString({ message: 'Balasan harus berupa string' })
