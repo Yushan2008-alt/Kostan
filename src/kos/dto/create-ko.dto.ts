@@ -15,16 +15,16 @@ export class CreateKoDto {
   @IsNotEmpty({ message: 'Nama kos tidak boleh kosong' })
   @MinLength(3, { message: 'Nama kos minimal 3 karakter' })
   @MaxLength(100, { message: 'Nama kos maksimal 100 karakter' })
-  name: string;
+  name!: string;
 
   @IsNumber({}, { message: 'Owner ID harus berupa angka' })
   @IsPositive({ message: 'Owner ID harus positif' })
   @IsNotEmpty({ message: 'Owner ID tidak boleh kosong' })
-  ownerId: number;
+  ownerId!: number;
 
   @IsEnum(GenderType, { message: 'Gender harus PUTRA, PUTRI, atau CAMPUR' })
   @IsNotEmpty({ message: 'Gender tidak boleh kosong' })
-  gender: GenderType;
+  gender!: GenderType;
 
   @IsOptional()
   @IsString({ message: 'Deskripsi harus berupa string' })
