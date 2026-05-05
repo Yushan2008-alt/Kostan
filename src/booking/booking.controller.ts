@@ -10,6 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
@@ -20,6 +21,7 @@ import type { AuthenticatedRequest } from '../auth/types/authenticated-request.t
 import { PrismaService } from '../prisma/prisma.service';
 import { Role } from '../generated/prisma/enums';
 
+@ApiTags('bookings')
 @Controller('bookings')
 export class BookingController {
   constructor(
@@ -31,6 +33,7 @@ export class BookingController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.SOCIETY)
+  @ApiBearerAuth()
   async createBooking(
     @Body() body: CreateBookingDto,
     @Req() req: AuthenticatedRequest,
@@ -55,6 +58,7 @@ export class BookingController {
   @Patch(':id/status')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER)
+  @ApiBearerAuth()
   async updateStatus(@Param('id') id: string, @Body() body: UpdateBookingDto) {
     return this.prisma.booking.update({
       where: { id: parseInt(id) },
@@ -66,6 +70,7 @@ export class BookingController {
   @Get('history')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER)
+  @ApiBearerAuth()
   async getHistory(@Query('month') month: string, @Query('year') year: string) {
     const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
     const endDate = new Date(parseInt(year), parseInt(month), 0); // Hari terakhir bulan tsb

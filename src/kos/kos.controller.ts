@@ -8,6 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from '../prisma/prisma.service';
 import { GenderType, Role } from '../generated/prisma/enums';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -17,6 +18,7 @@ import { CreateKoDto } from './dto/create-ko.dto';
 import { KosService } from './kos.service';
 import type { AuthenticatedRequest } from '../auth/types/authenticated-request.type';
 
+@ApiTags('kos')
 @Controller('kos')
 export class KosController {
   constructor(
@@ -27,6 +29,7 @@ export class KosController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER)
+  @ApiBearerAuth()
   async createKos(
     @Body() body: Omit<CreateKoDto, 'ownerId'>,
     @Req() req: AuthenticatedRequest,

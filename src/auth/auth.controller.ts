@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -17,6 +18,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { Roles } from './decorators/roles.decorator';
 import { Role } from '../generated/prisma/enums';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -44,6 +46,7 @@ export class AuthController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER)
+  @ApiBearerAuth()
   findAll() {
     return this.authService.findAll();
   }
@@ -51,6 +54,7 @@ export class AuthController {
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER)
+  @ApiBearerAuth()
   findOne(@Param('id') id: string) {
     return this.authService.findOne(+id);
   }
@@ -58,6 +62,7 @@ export class AuthController {
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER)
+  @ApiBearerAuth()
   update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
     return this.authService.update(+id, updateAuthDto);
   }
@@ -65,6 +70,7 @@ export class AuthController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER)
+  @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.authService.remove(+id);
   }

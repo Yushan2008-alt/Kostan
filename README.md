@@ -59,6 +59,10 @@
 | GET | `/bookings/history` | Yes (JWT) | `OWNER` | Histori booking by `month` dan `year` |
 | PATCH | `/reviews/:id/reply` | Yes (JWT) | `OWNER` | Balas review society |
 
+## Swagger
+
+Jalankan aplikasi lalu buka `http://localhost:3000/swagger` untuk mencoba endpoint langsung dari Swagger UI. Gunakan tombol **Authorize** dan masukkan `Bearer <token>` agar request ke endpoint yang membutuhkan JWT ikut membawa token.
+
 ## Project setup
 
 ```bash
