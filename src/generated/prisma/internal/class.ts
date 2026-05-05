@@ -22,7 +22,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "/home/runner/work/Kostan/Kostan/src/generated/prisma",
+      "value": "C:\\Users\\CANDRA DEWI\\Desktop\\.vscode\\NestJs\\Kostan\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -31,12 +31,12 @@ const config: runtime.GetPrismaClientConfig = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/runner/work/Kostan/Kostan/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\CANDRA DEWI\\Desktop\\.vscode\\NestJs\\Kostan\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../../prisma",
@@ -47,7 +47,6 @@ const config: runtime.GetPrismaClientConfig = {
   ],
   "activeProvider": "mysql",
   "postinstall": false,
-  "ciName": "GitHub Actions",
   "inlineDatasources": {
     "db": {
       "url": {
