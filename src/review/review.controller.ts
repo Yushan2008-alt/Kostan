@@ -8,6 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from '../prisma/prisma.service';
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -16,6 +17,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../generated/prisma/enums';
 
+@ApiTags('reviews')
 @Controller('reviews')
 export class ReviewController {
   constructor(
@@ -27,6 +29,7 @@ export class ReviewController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.SOCIETY)
   @Post()
+  @ApiBearerAuth()
   async addReview(
     @Body() body: CreateReviewDto,
     @Req() req: { user: { id: number } },
@@ -38,6 +41,7 @@ export class ReviewController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.OWNER)
   @Patch(':id/reply')
+  @ApiBearerAuth()
   async replyReview(@Param('id') id: string, @Body() body: { reply: string }) {
     return this.prisma.review.update({
       where: { id: parseInt(id) },
